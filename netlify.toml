@@ -1,0 +1,39 @@
+[build]
+  command = "echo static build"
+  publish = "."
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# API -> функция
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+# Не раздаём служебные файлы
+[[redirects]]
+  from = "/server.js"
+  to = "/"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/package.json"
+  to = "/"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/package-lock.json"
+  to = "/"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/.env.example"
+  to = "/"
+  status = 200
+  force = true
