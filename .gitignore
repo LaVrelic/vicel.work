@@ -1,0 +1,38 @@
+# ── Исходный код (в репозиторий только обфусцированные билды) ──
+src/
+tgbot/
+
+# ── Секреты (НИКОГДА не коммитить) ──
+.env
+**/.env
+!.env.example
+
+# ── Базы данных и пользовательские данные ──
+data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# ── Зависимости ──
+node_modules/
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.python
+
+# ── Логи ──
+logs/
+*.log
+*.err.log
+
+# ── Билды и мусор ──
+*.exe
+loader/
+.DS_Store
+Thumbs.db
