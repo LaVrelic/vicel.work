@@ -1,0 +1,14 @@
+{
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 15
+    }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index" },
+    { "source": "/server.js", "destination": "/" },
+    { "source": "/package.json", "destination": "/" },
+    { "source": "/package-lock.json", "destination": "/" },
+    { "source": "/.env.example", "destination": "/" }
+  ]
+}
