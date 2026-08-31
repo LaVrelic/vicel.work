@@ -4,8 +4,8 @@
   "private": true,
   "description": "Vicel site + Email OTP auth backend (Resend)",
   "scripts": {
-    "start": "node server.js",
-    "build:function": "esbuild src/function-entry.js --bundle --platform=node --external:pg-native --minify --outfile=netlify/functions/api.js"
+    "build:function": "esbuild src/function-entry.js --bundle --platform=node --external:pg-native --minify --outfile=netlify/functions/api.js",
+    "serve": "node server.cjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
