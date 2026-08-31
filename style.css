@@ -1208,9 +1208,21 @@ body::before {
 .profile-grid {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
+  grid-template-areas:
+    "activity settings"
+    "loader   settings";
   gap: 14px;
   align-items: start;
 }
+
+.panel-activity { grid-area: activity; }
+
+#btn-loader {
+  grid-area: loader;
+  width: 100%;
+}
+
+.panel-settings { grid-area: settings; }
 
 #btn-loader {
   grid-column: 1;
@@ -1746,5 +1758,11 @@ body::before {
 
   .profile-plan .btn { margin-left: 0; }
 
-  .profile-grid { grid-template-columns: 1fr; }
+  .profile-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "activity"
+      "loader"
+      "settings";
+  }
 }
