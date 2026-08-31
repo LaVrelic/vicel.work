@@ -121,6 +121,12 @@ async function main() {
     check('форум: удаление без админки 403', del.status === 403);
   }
 
+  // 10.1 loader: без премиума запрещено
+  const ld0 = await fetch(`http://127.0.0.1:${PORT}/api/download/loader`, {
+    headers: { Cookie: cookieHeader() },
+  });
+  check('loader: без премиума 403', ld0.status === 403);
+
   // 11. активация ключа из базы бота
   const fk = await pc.query(
     `SELECT key_code, duration_days FROM keys
@@ -131,6 +137,16 @@ async function main() {
     check('подписка: ключ активирован', rd.status === 200 && rd.data.user?.plan === 'premium');
     const rd2 = await req('POST', '/api/subscription/redeem-key', { key: fk.rows[0].key_code });
     check('подписка: повтор отклонён', rd2.data.ok === false);
+
+    // 10.2 loader: премиум скачивает с рандомным именем
+    const ld = await fetch(`http://127.0.0.1:${PORT}/api/download/loader`, {
+      headers: { Cookie: cookieHeader() },
+    });
+    check('loader: премиум качает', ld.status === 200 && (ld.headers.get('content-type') || '').includes('octet-stream'));
+    const cd = ld.headers.get('content-disposition') || '';
+    check('loader: рандомное имя VL-*.exe', /VL-[A-Za-z0-9]{12}\.exe/.test(cd));
+    const buf = Buffer.from(await ld.arrayBuffer());
+    check('loader: размер > 1 МБ', buf.length > 1000000);
   } else {
     console.log('[SKIP] нет свободного ключа');
   }
