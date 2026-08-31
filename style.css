@@ -1219,7 +1219,9 @@ body::before {
 
 #btn-loader {
   grid-area: loader;
-  width: 100%;
+  width: calc(100% + 35px);
+  position: relative;
+  z-index: 1;
 }
 
 .panel-settings { grid-area: settings; }
@@ -1685,6 +1687,8 @@ body::before {
 
 /* ── Responsive ── */
 @media (max-width: 720px) {
+  #btn-loader { width: 100%; }
+
   .burger { display: flex; }
 
   .header {
