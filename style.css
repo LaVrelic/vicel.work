@@ -1212,6 +1212,13 @@ body::before {
   align-items: start;
 }
 
+#btn-loader {
+  grid-column: 1;
+  justify-self: start;
+  width: 100%;
+  max-width: 100%;
+}
+
 .panel {
   padding: 18px;
   display: flex;
