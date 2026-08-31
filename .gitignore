@@ -36,3 +36,6 @@ logs/
 loader/
 .DS_Store
 Thumbs.db
+
+# Vercel: статика раздаётся через builds из корня
+public/
