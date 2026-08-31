@@ -139,6 +139,26 @@ async function main() {
   const sa = await req('POST', '/api/admin/set-admin', { uid: myUid, admin: true });
   check('админка: без прав 403', sa.status === 403);
 
+  // 12.1 положительный тест: настоящий админ выдаёт/снимает админку
+  await pc.query(
+    `INSERT INTO site_users (id, uid, nick, email, pass_hash, created, is_admin)
+     VALUES ('e2eadmin-id', 99999, 'e2eadmin', 'e2eadmin@vicel.work', 'x', 0, true)
+     ON CONFLICT (id) DO NOTHING`);
+  const adminSid = 'e2eadmin-sid-' + Date.now();
+  await pc.query(
+    `INSERT INTO site_sessions (sid, user_id, expires_at) VALUES ($1, 'e2eadmin-id', $2)`,
+    [adminSid, Date.now() + 3600000]);
+  const savedSid = cookieJar['vicel_sid'];
+  cookieJar['vicel_sid'] = adminSid;
+  const e2eUidRow = await pc.query(`SELECT uid FROM site_users WHERE nick='e2etest'`);
+  const grant = await req('POST', '/api/admin/set-admin', { uid: e2eUidRow.rows[0].uid, admin: true });
+  check('админка: админ выдаёт админку', grant.status === 200);
+  const revoke = await req('POST', '/api/admin/set-admin', { uid: e2eUidRow.rows[0].uid, admin: false });
+  check('админка: админ снимает админку', revoke.status === 200);
+  cookieJar['vicel_sid'] = savedSid;
+  await pc.query(`DELETE FROM site_sessions WHERE sid = $1`, [adminSid]);
+  await pc.query(`DELETE FROM site_users WHERE id = 'e2eadmin-id'`);
+
   // 13. аватарка
   const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
   const av = await req('POST', '/api/auth/avatar', { data: png });

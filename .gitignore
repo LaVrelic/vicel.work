@@ -39,3 +39,4 @@ Thumbs.db
 
 # Vercel: статика раздаётся через builds из корня
 public/
+_dbg*.js
