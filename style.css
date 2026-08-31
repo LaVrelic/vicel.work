@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   color-scheme: dark;
   --bg: #050505;
   --card: rgba(255, 255, 255, 0.03);
@@ -1215,13 +1215,19 @@ body::before {
   align-items: start;
 }
 
-.panel-activity { grid-area: activity; }
+.panel-activity {
+  grid-area: activity;
+  border-radius: 12px 12px 0 0;
+}
 
 #btn-loader {
   grid-area: loader;
-  width: calc(100% + 35px);
-  position: relative;
-  z-index: 1;
+  width: 100%;
+  margin-top: -14px;
+  padding: 19px;
+  font-size: 1.12rem;
+  font-weight: 800;
+  border-radius: 0 0 12px 12px;
 }
 
 .panel-settings { grid-area: settings; }
@@ -1770,3 +1776,4 @@ body::before {
       "settings";
   }
 }
+
