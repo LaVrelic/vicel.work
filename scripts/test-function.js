@@ -147,6 +147,21 @@ async function main() {
     check('loader: рандомное имя VL-*.exe', /VL-[A-Za-z0-9]{12}\.exe/.test(cd));
     const buf = Buffer.from(await ld.arrayBuffer());
     check('loader: размер > 1 МБ', buf.length > 1000000);
+
+    // 10.3 public API для лоадера: GET /api/user?key=
+    const ua = await req('GET', `/api/user?key=${encodeURIComponent(fk.rows[0].key_code)}`);
+    check('loader API: 200 + uid', ua.status === 200 && ua.data.uid === myUid && ua.data.nickname === 'e2etest');
+    check('loader API: формат даты', /^\d{4}-\d{2}-\d{2}$/.test(ua.data.expires || ''));
+    const ua404 = await req('GET', '/api/user?key=VIC-NO-SUCH-KEY-000');
+    check('loader API: неизвестный ключ 404', ua404.status === 404 && ua404.data.error === 'not_found');
+    await pc.query(`UPDATE site_users SET plan = 'free', plan_expires_at = $1 WHERE nick = 'e2etest'`, [Date.now() - 1000]);
+    const dbchk = await pc.query(`SELECT plan, plan_expires_at FROM site_users WHERE nick = 'e2etest'`);
+    console.log('[DEBUG db after update]', JSON.stringify(dbchk.rows[0]));
+    await new Promise(r => setTimeout(r, 700));
+    const uaExp = await req('GET', `/api/user?key=${encodeURIComponent(fk.rows[0].key_code)}`);
+    if (uaExp.status !== 403) console.log('[DEBUG expired]', uaExp.status, uaExp.text.slice(0, 200));
+    check('loader API: истёкшая подписка 403', uaExp.status === 403 && uaExp.data.error === 'expired');
+    await pc.query(`UPDATE site_users SET plan = 'premium', plan_expires_at = $1 WHERE nick = 'e2etest'`, [Date.now() + 45 * 86400000]);
   } else {
     console.log('[SKIP] нет свободного ключа');
   }
@@ -221,3 +236,5 @@ async function main() {
 }
 
 main().catch(e => { console.error('E2E ERR:', e); process.exit(1); });
+
+
